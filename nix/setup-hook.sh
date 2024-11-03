@@ -89,8 +89,16 @@ gradleInstallPhase() {
     if [ -z "${gradleInstallFlags:-}" ] && [ -z "${gradleInstallFlagsArray[*]}" ]; then
         echo "gradleInstallFlags is not set, doing nothing"
     else
+        new_array=()
+        for ((i=0; i<${#gradleFlagsArray[@]}; i++)); do
+            echoCmd "gradleInstallFlagsArray flags" "$i ${gradleFlagsArray[$i]}"
+            if [[ "${gradleFlagsArray[$i]}" != '--console' && "${gradleFlagsArray[$i]}" != 'plain' ]]; then
+                new_array+=("${gradleFlagsArray[$i]}")
+            fi
+        done
+
         local flagsArray=(
-            $gradleFlags "${gradleFlagsArray[@]}"
+            $gradleFlags "${new_array[@]}"
             $gradleInstallFlags "${gradleInstallFlagsArray[@]}"
         )
 
